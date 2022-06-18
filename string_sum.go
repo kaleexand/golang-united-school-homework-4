@@ -1,4 +1,3 @@
-//package main
 package string_sum
 
 import (
@@ -66,6 +65,9 @@ func StringSum(input string) (output string, err error) {
 	trimResult := strings.ReplaceAll(input, " ", "")
 	//fmt.Println(trimResult)
 	firstNum, err := parseOperand(trimResult, &cursor)
+	if err != nil {
+		return "", fmt.Errorf("error while calculating sum: %w", errorNotTwoOperands)
+	}
 	if cursor == len(trimResult) {
 		return "", fmt.Errorf("error while calculating sum: %w", errorNotTwoOperands)
 	}
@@ -81,6 +83,6 @@ func StringSum(input string) (output string, err error) {
 }
 
 //func main() {
-//	in := "30"
+//	in := "2+b"
 //	fmt.Println(StringSum(in))
 //}
