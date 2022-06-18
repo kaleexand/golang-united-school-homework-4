@@ -1,6 +1,5 @@
-package string_sum
-
 //package main
+package string_sum
 
 import (
 	"errors"
@@ -27,7 +26,7 @@ var (
 //
 // Use the errors defined above as described, again wrapping into fmt.Errorf
 
-func pase_num(s string, i *int) (num string) {
+func parseNum(s string, i *int) (num string) {
 	for {
 		if len(s) == *i || string(s[*i]) == "+" || string(s[*i]) == "-" {
 			return num
@@ -47,9 +46,10 @@ func parseOperand(str string, cursor *int) (firstNum int, err error) {
 		*cursor++
 	}
 	if *cursor == len(str) {
-		return 0, fmt.Errorf("error while calculating sum: %w", errorNotTwoOperands)
+		e := err.(*strconv.NumError)
+		return 0, fmt.Errorf("error: %w", e)
 	}
-	first, err := strconv.Atoi(pase_num(str, cursor))
+	first, err := strconv.Atoi(parseNum(str, cursor))
 	if err != nil {
 		e := err.(*strconv.NumError)
 		return 0, fmt.Errorf("error while calculating sum: %w", e)
@@ -66,6 +66,9 @@ func StringSum(input string) (output string, err error) {
 	trimResult := strings.ReplaceAll(input, " ", "")
 	//fmt.Println(trimResult)
 	firstNum, err := parseOperand(trimResult, &cursor)
+	if cursor == len(trimResult) {
+		return "", fmt.Errorf("error while calculating sum: %w", errorNotTwoOperands)
+	}
 	secondNum, err := parseOperand(trimResult, &cursor)
 	if cursor != len(trimResult) {
 		return "", fmt.Errorf("error while calculating sum: %w", errorNotTwoOperands)
@@ -77,8 +80,7 @@ func StringSum(input string) (output string, err error) {
 	return output, nil
 }
 
-//
 //func main() {
-//	in := "30+5"
+//	in := "30"
 //	fmt.Println(StringSum(in))
 //}
