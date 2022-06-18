@@ -1,7 +1,11 @@
-package string_sum
+//package string_sum
+
+package main
 
 import (
 	"errors"
+	"fmt"
+	"strings"
 )
 
 //use these errors as appropriate, wrapping them with fmt.Errorf function
@@ -22,6 +26,36 @@ var (
 //
 // Use the errors defined above as described, again wrapping into fmt.Errorf
 
+func pase_num(str string) (num string) {
+	for i := 0; i < len(str); i++ {
+		if str[i] != 43 || string(str[i]) != "-" {
+			num += string(str[i])
+			//fmt.Println(str[i])
+		} else {
+			break
+		}
+	}
+	return num
+}
 func StringSum(input string) (output string, err error) {
-	return "", nil
+
+	if len(input) == 0 {
+		return "", fmt.Errorf("string is empty: %w", errorEmptyInput)
+	}
+	trimResult := strings.TrimSpace(input)
+	if string(trimResult[0]) == "+" {
+		trimResult = trimResult[1 : len(trimResult)-1]
+	}
+	first := ""
+	if string(trimResult[0]) == "-" {
+		first = "-"
+	}
+	first += pase_num(trimResult)
+	fmt.Println(first)
+	return output, nil
+}
+
+func main() {
+	in := " +30 + 5"
+	fmt.Println(StringSum(in))
 }
