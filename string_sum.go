@@ -1,3 +1,4 @@
+//package main
 package string_sum
 
 import (
@@ -51,7 +52,7 @@ func parseOperand(str string, cursor *int) (firstNum int, err error) {
 	first, err := strconv.Atoi(parseNum(str, cursor))
 	if err != nil {
 		e := err.(*strconv.NumError)
-		return 0, fmt.Errorf("error while calculating sum: %w", e)
+		return 0, fmt.Errorf("%w", e)
 	}
 	firstNum *= first
 	return
@@ -66,7 +67,7 @@ func StringSum(input string) (output string, err error) {
 	//fmt.Println(trimResult)
 	firstNum, err := parseOperand(trimResult, &cursor)
 	if err != nil {
-		return "", fmt.Errorf("error while calculating sum: %w", errorNotTwoOperands)
+		return "", err
 	}
 	if cursor == len(trimResult) {
 		return "", fmt.Errorf("error while calculating sum: %w", errorNotTwoOperands)
@@ -76,13 +77,13 @@ func StringSum(input string) (output string, err error) {
 		return "", fmt.Errorf("error while calculating sum: %w", errorNotTwoOperands)
 	}
 	if err != nil {
-		return "", fmt.Errorf("error while calculating sum: %w", errorNotTwoOperands)
+		return "", err
 	}
 	output = strconv.Itoa(firstNum + secondNum)
 	return output, nil
 }
 
 //func main() {
-//	in := "2+b"
+//	in := "24+55c"
 //	fmt.Println(StringSum(in))
 //}
