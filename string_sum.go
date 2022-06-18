@@ -1,10 +1,11 @@
-//package string_sum
+package string_sum
 
-package main
+//package main
 
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -26,36 +27,58 @@ var (
 //
 // Use the errors defined above as described, again wrapping into fmt.Errorf
 
-func pase_num(str string) (num string) {
-	for i := 0; i < len(str); i++ {
-		if str[i] != 43 || string(str[i]) != "-" {
-			num += string(str[i])
-			//fmt.Println(str[i])
-		} else {
-			break
+func pase_num(s string, i *int) (num string) {
+	for {
+		if len(s) == *i || string(s[*i]) == "+" || string(s[*i]) == "-" {
+			return num
 		}
+		num += string(s[*i])
+		*i++
 	}
-	return num
 }
-func StringSum(input string) (output string, err error) {
 
+func parseOperand(str string, cursor *int) (firstNum int, err error) {
+	firstNum = 1
+	if string(str[*cursor]) == "-" {
+		firstNum = -1
+		*cursor++
+	}
+	if string(str[*cursor]) == "+" {
+		*cursor++
+	}
+	if *cursor == len(str) {
+		return 0, fmt.Errorf("error while calculating sum: %w", errorNotTwoOperands)
+	}
+	first, err := strconv.Atoi(pase_num(str, cursor))
+	if err != nil {
+		e := err.(*strconv.NumError)
+		return 0, fmt.Errorf("error while calculating sum: %w", e)
+	}
+	firstNum *= first
+	return
+}
+
+func StringSum(input string) (output string, err error) {
+	cursor := 0
 	if len(input) == 0 {
 		return "", fmt.Errorf("string is empty: %w", errorEmptyInput)
 	}
-	trimResult := strings.TrimSpace(input)
-	if string(trimResult[0]) == "+" {
-		trimResult = trimResult[1 : len(trimResult)-1]
+	trimResult := strings.ReplaceAll(input, " ", "")
+	//fmt.Println(trimResult)
+	firstNum, err := parseOperand(trimResult, &cursor)
+	secondNum, err := parseOperand(trimResult, &cursor)
+	if cursor != len(trimResult) {
+		return "", fmt.Errorf("error while calculating sum: %w", errorNotTwoOperands)
 	}
-	first := ""
-	if string(trimResult[0]) == "-" {
-		first = "-"
+	if err != nil {
+		return "", fmt.Errorf("error while calculating sum: %w", errorNotTwoOperands)
 	}
-	first += pase_num(trimResult)
-	fmt.Println(first)
+	output = strconv.Itoa(firstNum + secondNum)
 	return output, nil
 }
 
-func main() {
-	in := " +30 + 5"
-	fmt.Println(StringSum(in))
-}
+//
+//func main() {
+//	in := "30+5"
+//	fmt.Println(StringSum(in))
+//}
